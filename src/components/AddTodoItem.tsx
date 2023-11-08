@@ -25,7 +25,7 @@ export const AddTodoItem = () => {
   }
 
   return (
-    <form onSubmit={handleAddItem}>
+    <form onSubmit={handleAddItem} class={form}>
       <div>
         <ToDoInput
           ref={inputRef}
