@@ -1,13 +1,34 @@
-import React, { createContext } from 'react'
+import React, { createContext, useState } from 'react'
 // import { nanoid } from 'nanoid'
-import { useLocalStorage } from 'usehooks-ts'
 
-export const ToDoContext = createContext<undefined>(undefined)
+export interface ToDo {
+  id: string;
+  title: string;
+  description?: string;
+  done: boolean;
+}
+
+interface ToDoContextProps {
+  items: ToDo[]
+  addToDoItem: (item: ToDo) => void
+}
+export const ToDoContext = createContext<ToDoContextProps | undefined>(undefined)
 
 export const ToDoProvider = (props: { children: React.ReactNode }) => {
+  const [items, setTodoItems] = useState<ToDo[]>([])
+
+  const addToDoItem = (item: ToDo) => {
+    setTodoItems([...items, item])
+  }
+
+  const value: ToDoContextProps = {
+    items,
+    addToDoItem
+  }
+
   return (
-    <TodoContext.Provider value={undefined}>
+    <ToDoContext.Provider value={value}>
       {props.children}
-    </TodoContext.Provider>
+    </ToDoContext.Provider>
   )
 }
