@@ -1,8 +1,10 @@
 import { forwardRef, InputHTMLAttributes } from 'react'
+import { Input } from '@/components/ui/input'
+
 
 export const ToDoInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
   (
     {...properties}, ref
   ) => {
-  return (<input ref={ref} {...properties}/>)
+  return (<Input ref={ref} {...properties}/>)
 })

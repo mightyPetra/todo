@@ -1,6 +1,5 @@
-import React from 'react';
-import { Toaster } from 'react-hot-toast'
-import { AddToDo, ToDoList } from './components'
+import { Toaster } from 'sonner'
+import { AddToDo, ToDoList } from './features'
 
 function App() {
   return (
