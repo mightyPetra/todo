@@ -1,8 +1,8 @@
-import { forwardRef, InputHTMLAttributes } from 'react'
-import { Input } from '@/components/ui/input'
+import { forwardRef } from 'react'
+import { Input, InputProps } from '@mui/joy'
 
 
-export const ToDoInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
+export const ToDoInput = forwardRef<HTMLInputElement, InputProps>(
   (
     {...properties}, ref
   ) => {

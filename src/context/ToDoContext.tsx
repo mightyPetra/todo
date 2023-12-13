@@ -1,6 +1,5 @@
 import React, { createContext, useState } from 'react'
-// import { useLocalStorage } from 'usehooks-ts'
-// import { nanoid } from 'nanoid'
+import { nanoid } from 'nanoid'
 
 export interface ToDo {
   id: string;
@@ -11,30 +10,32 @@ export interface ToDo {
 
 interface ToDoContextProps {
   todos: ToDo[]
-  addToDo: (item: ToDo) => void
+  addToDo: (title: string) => void
   deleteToDo: (id: string) => void
-  editToDo: (id: string, title: string, description?: string) => void
+  editToDo: (id: string, title: string) => void
   updateToDoStatus: (id: string) => void
 }
+
 export const ToDoContext = createContext<ToDoContextProps | undefined>(undefined)
 
 export const ToDoProvider = (props: { children: React.ReactNode }) => {
   const [todos, setTodos] = useState<ToDo[]>([])
 
 
-  const addToDo = (item: ToDo) => {
-    setTodos([...todos, item])
+  const addToDo = (title: string) => {
+    const todo = { id: nanoid(), title: title, done: false }
+    setTodos([...todos, todo])
   }
 
   const deleteToDo = (id: string) => {
-    setTodos(todos => todos.filter(todo => todo.id === id))
+    setTodos(todos => todos.filter(todo => todo.id != id))
   }
 
-  const editToDo = (id: string, title: string, description?: string) => {
+  const editToDo = (id: string, title: string) => {
     setTodos(todos => {
       return todos.map(todo => {
         if (todo.id === id) {
-          return { ...todo, title, description }
+          return { ...todo, title, done: false }
         }
         return todo
       })
@@ -54,7 +55,6 @@ export const ToDoProvider = (props: { children: React.ReactNode }) => {
     })
 
   }
-
 
   const value: ToDoContextProps = {
     todos: todos,

@@ -1,37 +1,93 @@
 import { ToDo, useToDo } from '@/context'
-import { motion } from 'framer-motion'
-import { Checkbox } from '@/components/ui/checkbox'
-// import cn from 'classnames'
-import { useEffect } from 'react'
+import cn from 'classnames'
+import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import { cn } from '@/lib/utils.ts'
+import { Box, ButtonGroup, Checkbox, IconButton, Input, Sheet } from '@mui/joy'
+import { DeleteOutline, EditOutlined, SaveOutlined } from '@mui/icons-material'
 
-// single item
 export const ToDoItem = (props: { todo: ToDo }) => {
   const { todo } = props
-  // const [editingKey, setEditingKey] = useState<string | null>(null)
-  const  { updateToDoStatus } = useToDo()
+  const { updateToDoStatus, editToDo, deleteToDo } = useToDo()
+
+  const [editingKey, setEditingKey] = useState<string | null>(null)
+  const [toDoTitle, setToDoTitle] = useState<string>('')
+
+  const editInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-
-  }, [todo])
+    if (editingKey != null && editInputRef.current) {
+      editInputRef.current.focus()
+    }
+  }, [editingKey])
 
   const handleStatusUpdate = (id: string) => {
     updateToDoStatus(id)
-    console.info(todo)
     toast.success(!todo.done ? 'Good job!' : 'Let\'s give it another try :D')
   }
 
-  return (
-    <motion.li layout key = {todo.id} className={ cn( 'p-1.5', todo.done && 'bg-opacity-50 text-zinc-500')}>
-        <div className="flex items-center space-x-2 rounded-md border p-4">
-        <Checkbox onClick={() => handleStatusUpdate(todo.id)}/>
-        <label className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          <h4 style={{ textDecoration: todo.done ? 'line-through' : 'none' }}>
-            {todo.title}
-          </h4>
-        </label>
+  const handleEdit = (id: string, updatedTitle: string) => {
+    setEditingKey(id)
+    setToDoTitle(updatedTitle)
+    if (editInputRef.current) {
+      editInputRef.current.focus()
+    }
+  }
+
+  const handleUpdate = (id: string) => {
+    if (toDoTitle.trim() !== '') {
+      editToDo(id, toDoTitle)
+      setEditingKey(null)
+      setToDoTitle('')
+      toast.success('ToDo updated successfully!')
+    } else {
+      toast.error('ToDo field cannot be empty!')
+    }
+  }
+
+  const handleDelete = (id: string) => {
+    deleteToDo(id)
+    toast.success('ToDo deleted successfully!')
+  }
+
+  const renderToDoEditInput =
+    (<>
+        <div>
+          <Input
+            ref={editInputRef}
+            type={'text'}
+            value={toDoTitle}
+            onChange={e => setToDoTitle(e.target.value)}/>
         </div>
-    </motion.li>
+        <div>
+          <IconButton onClick={() => handleUpdate(todo.id)} size="sm"><SaveOutlined /></IconButton>
+        </div>
+      </>
+)
+
+  const renderToDoItem =
+    (<>
+      <Checkbox onClick={() => handleStatusUpdate(todo.id)} label={todo.title} sx={{ textDecoration: todo.done ? 'line-through' : 'none'}}/>
+      <ButtonGroup variant="plain" size={'sm'}>
+        <IconButton onClick={() => handleEdit(todo.id, todo.title)}>
+          <EditOutlined fontSize={'small'}/>
+        </IconButton>
+        <IconButton onClick={() => handleDelete(todo.id)}>
+          <DeleteOutline fontSize={'small'}/>
+        </IconButton>
+      </ButtonGroup>
+    </>)
+
+  return (
+    <li key={todo.id} className={cn(todo.done && 'bg-opacity-50 text-zinc-500')}>
+      <Box sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        '& > div': { p: 2, borderRadius: 'md' }
+      }}>
+        <Sheet variant="outlined">
+          {editingKey === todo.id ? renderToDoEditInput : renderToDoItem}
+        </Sheet>
+      </Box>
+    </li>
   )
 }
