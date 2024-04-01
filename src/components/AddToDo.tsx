@@ -34,16 +34,20 @@ export const AddToDo = () => {
   return (
     <>
       <form onSubmit={handleAddItem}>
-        <div className="flex items-center w-full max-w-lg gap-2 p-5 m-auto">
           <ToDoInput
             ref={inputRef}
             value={todoInput}
-            className="w-full"
             onChange={onInput}
             type={'text'}
-            placeholder={'I want to....'}/>
-          <Button type={'submit'}>Add</Button>
-        </div>
+            placeholder={'I want to....'}
+            endDecorator={
+              <Button
+                variant={"soft"}
+                sx={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                type={'submit'}
+              >+</Button>
+            }
+          />
       </form>
     </>
   )

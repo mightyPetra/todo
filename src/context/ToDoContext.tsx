@@ -12,6 +12,7 @@ interface ToDoContextProps {
   todos: ToDo[]
   addToDo: (title: string) => void
   deleteToDo: (id: string) => void
+  deleteCompletedToDos: () => void
   editToDo: (id: string, title: string) => void
   updateToDoStatus: (id: string) => void
 }
@@ -29,6 +30,10 @@ export const ToDoProvider = (props: { children: React.ReactNode }) => {
 
   const deleteToDo = (id: string) => {
     setTodos(todos => todos.filter(todo => todo.id != id))
+  }
+
+  const deleteCompletedToDos = () => {
+    setTodos(todos => todos.filter(todo => !todo.done))
   }
 
   const editToDo = (id: string, title: string) => {
@@ -60,6 +65,7 @@ export const ToDoProvider = (props: { children: React.ReactNode }) => {
     todos: todos,
     addToDo,
     deleteToDo,
+    deleteCompletedToDos,
     editToDo,
     updateToDoStatus
   }

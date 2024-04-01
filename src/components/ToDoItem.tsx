@@ -1,8 +1,7 @@
 import { ToDo, useToDo } from '@/context'
-import cn from 'classnames'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import { Box, ButtonGroup, Checkbox, IconButton, Input, Sheet } from '@mui/joy'
+import { ButtonGroup, Checkbox, IconButton, Input, ListDivider, ListItem } from '@mui/joy'
 import { DeleteOutline, EditOutlined, SaveOutlined } from '@mui/icons-material'
 
 export const ToDoItem = (props: { todo: ToDo }) => {
@@ -49,45 +48,45 @@ export const ToDoItem = (props: { todo: ToDo }) => {
     toast.success('ToDo deleted successfully!')
   }
 
-  const renderToDoEditInput =
-    (<>
-        <div>
-          <Input
-            ref={editInputRef}
-            type={'text'}
-            value={toDoTitle}
-            onChange={e => setToDoTitle(e.target.value)}/>
-        </div>
-        <div>
-          <IconButton onClick={() => handleUpdate(todo.id)} size="sm"><SaveOutlined /></IconButton>
-        </div>
-      </>
-)
+  const renderToDoEditInput = <Input
+    ref={editInputRef}
+    type={"text"}
+    value={toDoTitle}
+    onChange={e => setToDoTitle(e.target.value)}
+  />
 
-  const renderToDoItem =
-    (<>
-      <Checkbox onClick={() => handleStatusUpdate(todo.id)} label={todo.title} sx={{ textDecoration: todo.done ? 'line-through' : 'none'}}/>
-      <ButtonGroup variant="plain" size={'sm'}>
-        <IconButton onClick={() => handleEdit(todo.id, todo.title)}>
-          <EditOutlined fontSize={'small'}/>
-        </IconButton>
-        <IconButton onClick={() => handleDelete(todo.id)}>
-          <DeleteOutline fontSize={'small'}/>
-        </IconButton>
-      </ButtonGroup>
-    </>)
+  const renderSaveButton = <IconButton
+    variant={"plain"}
+    type={"submit"}
+    onClick={() => handleUpdate(todo.id)}
+    size={"sm"}>
+    <SaveOutlined fontSize={'small'}/>
+  </IconButton>
+
+  const renderToDoItem = <Checkbox
+    onClick={() => handleStatusUpdate(todo.id)}
+    label={todo.title}
+    sx={{
+      textDecoration: todo.done ? 'line-through' : 'none',
+      opacity: todo.done ? '50%' : '100%'
+    }}
+  />
+
+  const renderActionButtons = <ButtonGroup className={"justify-end"} variant={"plain"} size={'sm'} >
+    <IconButton onClick={() => handleEdit(todo.id, todo.title)}>
+      <EditOutlined fontSize={"small"}/>
+    </IconButton>
+    <IconButton onClick={() => handleDelete(todo.id)}>
+      <DeleteOutline fontSize={"small"}/>
+    </IconButton>
+  </ButtonGroup>
 
   return (
-    <li key={todo.id} className={cn(todo.done && 'bg-opacity-50 text-zinc-500')}>
-      <Box sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        '& > div': { p: 2, borderRadius: 'md' }
-      }}>
-        <Sheet variant="outlined">
-          {editingKey === todo.id ? renderToDoEditInput : renderToDoItem}
-        </Sheet>
-      </Box>
-    </li>
+    <>
+      <ListItem key={todo.id} endAction={editingKey === todo.id ? renderSaveButton : renderActionButtons }>
+            {editingKey === todo.id ? renderToDoEditInput : renderToDoItem}
+      </ListItem>
+      <ListDivider inset='context' />
+    </>
   )
 }

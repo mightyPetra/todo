@@ -6,5 +6,5 @@ export const ToDoInput = forwardRef<HTMLInputElement, InputProps>(
   (
     {...properties}, ref
   ) => {
-  return (<Input ref={ref} {...properties}/>)
+  return (<Input ref={ref} {...properties} variant={"outlined"} />)
 })
